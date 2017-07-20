@@ -18,7 +18,7 @@ import {
 	LabelledControl,
 } from '../../../admin/client/App/elemental';
 
-const AsyncGettingStartedExampleGoogleMap = _.flowRight(
+const AsyncGoogleMap = _.flowRight(
   withScriptjs,
   withGoogleMap,
 )(props => (
@@ -245,17 +245,8 @@ module.exports = Field.create({
 		};
 
 		return (
-			<AsyncGettingStartedExampleGoogleMap
+			<AsyncGoogleMap
 				googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=AIzaSyC4R6AN7SmujjPUIGKdyao2Kqitzr1kiRg"
-				loadingElement={
-					<div style={{ height: `400px` }} />
-				}
-				containerElement={
-					<div style={{ height: `400px` }} />
-				}
-				mapElement={
-					<div style={{ height: `400px` }} />
-				}
 				marker={marker}
 				onMarkerRightClick={this.handleMarkerRightClick}
 				onMapLoad={this.handleMapLoad}
