@@ -1,7 +1,13 @@
 import _ from 'lodash';
 import React from 'react';
+import {
+	withGoogleMap,
+	GoogleMap,
+	Marker,
+} from 'react-google-maps';
+import withScriptjs from 'react-google-maps/lib/async/withScriptjs';
 import Field from '../Field';
-import CollapsedFieldLabel from '../../components/CollapsedFieldLabel';
+// import CollapsedFieldLabel from '../../components/CollapsedFieldLabel';
 import NestedFormField from '../../components/NestedFormField';
 
 import {
@@ -11,6 +17,24 @@ import {
 	Grid,
 	LabelledControl,
 } from '../../../admin/client/App/elemental';
+
+const AsyncGettingStartedExampleGoogleMap = _.flowRight(
+  withScriptjs,
+  withGoogleMap,
+)(props => (
+	<GoogleMap
+		ref={props.onMapLoad}
+		defaultZoom={16}
+		defaultCenter={{ lat: -33.498405, lng: -70.610659 }}
+		// defaultCenter={{ lat: -25.363882, lng: 131.044922 }}
+		onClick={props.onMapClick}
+		>
+		<Marker
+			{...props.marker}
+			onRightClick={() => props.onMarkerRightClick(props.marker)}
+			/>
+	</GoogleMap>
+));
 
 /**
  * TODO:
@@ -177,10 +201,73 @@ module.exports = Field.create({
 		);
 	},
 
+	handleMapLoad (map) {
+		this.map = map;
+	},
+
+	handleMarkerRightClick () {
+		const { value = {}, path, onChange } = this.props;
+		const geo = ['', ''];
+		onChange({
+			path,
+			value: {
+				...value,
+				geo,
+			},
+		});
+	},
+
+	handleMapClick (event) {
+		const { value = {}, path, onChange } = this.props;
+		const lng = event.latLng.lng();
+		const lat = event.latLng.lat();
+		const geo = [
+			lng || (value.geo ? value.geo[0] : 0.0),
+			lat || (value.geo ? value.geo[1] : 0.0),
+		];
+		onChange({
+			path,
+			value: {
+				...value,
+				geo,
+			},
+		});
+	},
+
+	renderMap () {
+		const { value = {} } = this.props;
+
+		const marker = {
+			position: {
+				lng: (value.geo ? value.geo[0] : 0.0),
+				lat: (value.geo ? value.geo[1] : 0.0),
+			},
+		};
+
+		return (
+			<AsyncGettingStartedExampleGoogleMap
+				googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=AIzaSyC4R6AN7SmujjPUIGKdyao2Kqitzr1kiRg"
+				loadingElement={
+					<div style={{ height: `400px` }} />
+				}
+				containerElement={
+					<div style={{ height: `400px` }} />
+				}
+				mapElement={
+					<div style={{ height: `400px` }} />
+				}
+				marker={marker}
+				onMarkerRightClick={this.handleMarkerRightClick}
+				onMapLoad={this.handleMapLoad}
+				onMapClick={this.handleMapClick}
+				/>
+		);
+	},
+
 	renderGeo () {
-		if (this.state.collapsedFields.geo) {
-			return null;
-		}
+		// if (this.state.collapsedFields.geo) {
+		// 	return null;
+		// }
 		const { value = {}, path, paths } = this.props;
 		const geo = value.geo || [];
 		return (
@@ -264,25 +351,22 @@ module.exports = Field.create({
 		}
 
 		/* eslint-disable no-script-url */
-		var showMore = !_.isEmpty(this.state.collapsedFields)
-			? <CollapsedFieldLabel onClick={this.uncollapseFields}>(show more fields)</CollapsedFieldLabel>
-			: null;
+		// var showMore = !_.isEmpty(this.state.collapsedFields)
+		// 	? <CollapsedFieldLabel onClick={this.uncollapseFields}>(show more fields)</CollapsedFieldLabel>
+		// 	: null;
 		/* eslint-enable */
 
 		const { label, path } = this.props;
 		return (
 			<div data-field-name={path} data-field-type="location">
-				<FormField label={label} htmlFor={path}>
-					{showMore}
-				</FormField>
-				{this.renderField('number', 'PO Box / Shop', true, true)}
+				<FormField label={label} htmlFor={path} />
+				{/* {this.renderField('number', 'PO Box / Shop', true, true)}
 				{this.renderField('name', 'Building Name', true)}
-				{this.renderField('street1', 'Street Address')}
-				{this.renderField('street2', 'Street Address 2', true)}
 				{this.renderSuburbState()}
-				{this.renderPostcodeCountry()}
+				{this.renderPostcodeCountry()} */}
 				{this.renderGeo()}
-				{this.renderGoogleOptions()}
+				{this.renderMap()}
+				{/* {this.renderGoogleOptions()} */}
 				{this.renderNote()}
 			</div>
 		);
