@@ -246,7 +246,7 @@ module.exports = Field.create({
 
 		return (
 			<AsyncGoogleMap
-				googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=AIzaSyC4R6AN7SmujjPUIGKdyao2Kqitzr1kiRg"
+				googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=AIzaSyBxbknblJm-VzT25GMZoZX3izu8yRr-gHU"
 				loadingElement={
 					<div style={{ height: `400px` }} />
 				}
